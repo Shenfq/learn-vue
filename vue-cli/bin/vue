@@ -3,7 +3,10 @@
 require('commander')
   .version(require('../package').version) //定义版本号
   .usage('<command> [options]')
+  //command方法，如果定义了第二个参数，会自动寻找当前文件所在目录下指定文件并运行
+  //比如：vue init，会运行当前目录下的vue-init文件
   .command('init', 'generate a new project from a template')
   .command('list', 'list available official templates')
   .command('build', 'prototype a new project')
   .parse(process.argv)
+  

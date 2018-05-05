@@ -24,9 +24,9 @@ const getTemplatePath = localPath.getTemplatePath
  */
 
 program
-  .usage('<template-name> [project-name]') //使用方式： vue init 模版名 项目名
-  .option('-c, --clone', 'use git clone') //使用git clone获取模版
-  .option('--offline', 'use cached template') //使用缓存的模版
+  .usage('<template-name> [project-name]') //使用方式： vue init <模版名> <项目名>
+  .option('-c, --clone', 'use git clone') //是否使用git clone获取模版
+  .option('--offline', 'use cached template') //是否使用缓存的模版
 
 /**
  * Help.
@@ -56,15 +56,16 @@ help()
 /**
  * Settings.
  */
-
+//通过program.args获取命令行内传入的参数
 let template = program.args[0] //模版名
 const hasSlash = template.indexOf('/') > -1
 const rawName = program.args[1]  //生成的目录名
-const inPlace = !rawName || rawName === '.' //没有输入文件名，表示当前目录
+const inPlace = !rawName || rawName === '.' //没有输入目录名，表示运行命令的目录
 const name = inPlace ? path.relative('../', process.cwd()) : rawName
 const to = path.resolve(rawName || '.')
 const clone = program.clone || false
 
+//本地模版放在 `~/.vue-templates/` 目录下
 const tmp = path.join(home, '.vue-templates', template.replace(/[\/:]/g, '-'))
 if (program.offline) { //使用离线模版
   console.log(`> Use cached template at ${chalk.yellow(tildify(tmp))}`)
@@ -84,8 +85,8 @@ if (inPlace || exists(to)) {
   inquirer.prompt([{
     type: 'confirm',
     message: inPlace
-      ? 'Generate project in current directory?'
-      : 'Target directory exists. Continue?',
+      ? 'Generate project in current directory?' //询问用户是否在当前目录生成代码
+      : 'Target directory exists. Continue?', //询问用户目录已经存在是否继续
     name: 'ok'
   }]).then(answers => {
     if (answers.ok) {

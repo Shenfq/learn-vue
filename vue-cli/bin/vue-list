@@ -5,7 +5,7 @@ const request = require('request')
 const chalk = require('chalk')
 
 /**
- * Padding.
+ * 加载中，命令行交互动画
  */
 
 console.log()
@@ -14,7 +14,7 @@ process.on('exit', () => {
 })
 
 /**
- * List repos.
+ * 远程仓库中的模版列表
  */
 
 request({
