@@ -8,17 +8,21 @@ import { fillParams } from './util/params'
 import { createRouteMap } from './create-route-map'
 import { normalizeLocation } from './util/location'
 
+// 暴露了两个方法 match 和 addRoutes
 export type Matcher = {
   match: (raw: RawLocation, current?: Route, redirectedFrom?: Location) => Route;
   addRoutes: (routes: Array<RouteConfig>) => void;
 };
 
+// 创建 Matcher 实例
 export function createMatcher (
-  routes: Array<RouteConfig>,
-  router: VueRouter
+  routes: Array<RouteConfig>, // 路由列表
+  router: VueRouter // 路由实例
 ): Matcher {
+  // 创建路由映射
   const { pathList, pathMap, nameMap } = createRouteMap(routes)
 
+  // 动态添加路由映射
   function addRoutes (routes) {
     createRouteMap(routes, pathList, pathMap, nameMap)
   }
@@ -28,6 +32,7 @@ export function createMatcher (
     currentRoute?: Route,
     redirectedFrom?: Location
   ): Route {
+    // 进行路由匹配
     const location = normalizeLocation(raw, currentRoute, false, router)
     const { name } = location
 

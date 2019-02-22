@@ -27,14 +27,14 @@ export class HashHistory extends History {
     if (supportsScroll) {
       setupScroll()
     }
-
+    // 监听路由的 change 事件，如果不支持 popstate 就监听 hashchange
     window.addEventListener(supportsPushState ? 'popstate' : 'hashchange', () => {
       const current = this.current
       if (!ensureSlash()) {
         return
       }
       this.transitionTo(getHash(), route => {
-        if (supportsScroll) {
+        if (supportsScroll) { // 是否要触发滚动行为
           handleScroll(this.router, route, current, true)
         }
         if (!supportsPushState) {
@@ -88,6 +88,7 @@ function checkFallback (base) {
   }
 }
 
+// 确保路由是 "/" 开头
 function ensureSlash (): boolean {
   const path = getHash()
   if (path.charAt(0) === '/') {
@@ -97,6 +98,7 @@ function ensureSlash (): boolean {
   return false
 }
 
+// 获取 hash 的路由
 export function getHash (): string {
   // We can't use window.location.hash here because it's not
   // consistent across browsers - Firefox will pre-decode it!
@@ -105,6 +107,7 @@ export function getHash (): string {
   return index === -1 ? '' : href.slice(index + 1)
 }
 
+// 替换当前 url 的 hash 参数
 function getUrl (path) {
   const href = window.location.href
   const i = href.indexOf('#')

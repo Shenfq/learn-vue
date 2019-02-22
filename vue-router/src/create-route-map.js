@@ -10,9 +10,9 @@ export function createRouteMap (
   oldPathMap?: Dictionary<RouteRecord>,
   oldNameMap?: Dictionary<RouteRecord>
 ): {
-  pathList: Array<string>;
-  pathMap: Dictionary<RouteRecord>;
-  nameMap: Dictionary<RouteRecord>;
+  pathList: Array<string>; // 路由记录的列表
+  pathMap: Dictionary<RouteRecord>; // 路由 path 到路由记录的映射
+  nameMap: Dictionary<RouteRecord>; // 路由 name 到路由记录的映射
 } {
   // the path list is used to control path matching priority
   const pathList: Array<string> = oldPathList || []
@@ -22,10 +22,11 @@ export function createRouteMap (
   const nameMap: Dictionary<RouteRecord> = oldNameMap || Object.create(null)
 
   routes.forEach(route => {
+    // 遍历路由表，并生成路由记录
     addRouteRecord(pathList, pathMap, nameMap, route)
   })
 
-  // ensure wildcard routes are always at the end
+  // 确保通配符在路由记录的最后
   for (let i = 0, l = pathList.length; i < l; i++) {
     if (pathList[i] === '*') {
       pathList.push(pathList.splice(i, 1)[0])
@@ -49,7 +50,7 @@ function addRouteRecord (
   parent?: RouteRecord,
   matchAs?: string
 ) {
-  const { path, name } = route
+  const { path, name } = route // 获取路由的 path 和 name
   if (process.env.NODE_ENV !== 'production') {
     assert(path != null, `"path" is required in a route configuration.`)
     assert(
@@ -70,6 +71,7 @@ function addRouteRecord (
     pathToRegexpOptions.sensitive = route.caseSensitive
   }
 
+  // 生成路由记录
   const record: RouteRecord = {
     path: normalizedPath,
     regex: compileRouteRegex(normalizedPath, pathToRegexpOptions),
@@ -108,6 +110,7 @@ function addRouteRecord (
       const childMatchAs = matchAs
         ? cleanPath(`${matchAs}/${child.path}`)
         : undefined
+      // 添加子路由的路由记录
       addRouteRecord(pathList, pathMap, nameMap, child, record, childMatchAs)
     })
   }
@@ -142,6 +145,7 @@ function addRouteRecord (
     if (!nameMap[name]) {
       nameMap[name] = record
     } else if (process.env.NODE_ENV !== 'production' && !matchAs) {
+      // 如果路由的 name 重复，控制台显示错误信息
       warn(
         false,
         `Duplicate named routes definition: ` +
@@ -151,6 +155,7 @@ function addRouteRecord (
   }
 }
 
+// 利用 path-to-regexp 库，将 path 转化为正则表达式
 function compileRouteRegex (path: string, pathToRegexpOptions: PathToRegexpOptions): RouteRegExp {
   const regex = Regexp(path, [], pathToRegexpOptions)
   if (process.env.NODE_ENV !== 'production') {

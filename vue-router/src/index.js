@@ -15,6 +15,7 @@ import { AbstractHistory } from './history/abstract'
 
 import type { Matcher } from './create-matcher'
 
+// VueRouter类
 export default class VueRouter {
   static install: () => void;
   static version: string;
@@ -36,12 +37,16 @@ export default class VueRouter {
     this.app = null
     this.apps = []
     this.options = options
+    // 定义钩子函数
     this.beforeHooks = []
     this.resolveHooks = []
     this.afterHooks = []
+    // 创建匹配对象实例
     this.matcher = createMatcher(options.routes || [], this)
 
     let mode = options.mode || 'hash'
+
+    // 如果浏览器不支持 html 的 history api 是否要退回 hash 模式
     this.fallback = mode === 'history' && !supportsPushState && options.fallback !== false
     if (this.fallback) {
       mode = 'hash'
@@ -51,6 +56,7 @@ export default class VueRouter {
     }
     this.mode = mode
 
+    // 根据不同 mode 创建不同的 history 实例
     switch (mode) {
       case 'history':
         this.history = new HTML5History(this, options.base)
@@ -94,9 +100,9 @@ export default class VueRouter {
       return
     }
 
-    this.app = app
+    this.app = app // 保存 vue 实例
 
-    const history = this.history
+    const history = this.history // 获取 history 实例
 
     if (history instanceof HTML5History) {
       history.transitionTo(history.getCurrentLocation())
@@ -227,7 +233,7 @@ function createHref (base: string, fullPath: string, mode) {
   return base ? cleanPath(base + '/' + path) : path
 }
 
-VueRouter.install = install
+VueRouter.install = install // 暴露给 vue.use 的接口
 VueRouter.version = '__VERSION__'
 
 if (inBrowser && window.Vue) {
