@@ -14,7 +14,7 @@ export class HashHistory extends History {
     if (fallback && checkFallback(this.base)) {
       return
     }
-    ensureSlash()
+    ensureSlash() // 确保路由是已 / 开头
   }
 
   // this is delayed until the app mounts
@@ -73,7 +73,7 @@ export class HashHistory extends History {
     }
   }
 
-  getCurrentLocation () {
+  getCurrentLocation () { // 获取当前 url 的路由（hash模式下是 # 后的部分）
     return getHash()
   }
 }

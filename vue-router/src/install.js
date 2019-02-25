@@ -26,7 +26,7 @@ export function install (Vue) {
        *   router
        * })
       */
-      if (isDef(this.$options.router)) {
+      if (isDef(this.$options.router)) { // 只有vue的根实例才调用 init 方法
         this._routerRoot = this
         this._router = this.$options.router
         // 调用路由实例的 init 方法

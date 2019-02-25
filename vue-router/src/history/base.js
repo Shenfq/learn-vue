@@ -34,6 +34,7 @@ export class History {
     this.router = router
     this.base = normalizeBase(base)
     // start with a route object that stands for "nowhere"
+    // START = createRoute(null, { path: '/' })
     this.current = START
     this.pending = null
     this.ready = false
@@ -62,7 +63,7 @@ export class History {
   }
 
   transitionTo (location: RawLocation, onComplete?: Function, onAbort?: Function) {
-    const route = this.router.match(location, this.current)
+    const route = this.router.match(location, this.current) // 匹配要跳转的路由记录
     this.confirmTransition(route, () => {
       this.updateRoute(route)
       onComplete && onComplete(route)
@@ -97,6 +98,7 @@ export class History {
       }
       onAbort && onAbort(err)
     }
+    // 如果跳转路径和当前路径相同，进行中断
     if (
       isSameRoute(route, current) &&
       // in the case the route map has been dynamically appended to
