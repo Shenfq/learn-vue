@@ -44,7 +44,7 @@ export class History {
   }
 
   listen (cb: Function) {
-    this.cb = cb
+    this.cb = cb // 路由更新的回调
   }
 
   onReady (cb: Function, errorCb: ?Function) {
@@ -114,6 +114,7 @@ export class History {
       activated
     } = resolveQueue(this.current.matched, route.matched)
 
+    // 构造路由队列
     const queue: Array<?NavigationGuard> = [].concat(
       // in-component leave guards
       extractLeaveGuards(deactivated),
@@ -162,6 +163,7 @@ export class History {
       }
     }
 
+    // 对路由守卫进行遍历
     runQueue(queue, iterator, () => {
       const postEnterCbs = []
       const isValid = () => this.current === route
@@ -186,8 +188,10 @@ export class History {
 
   updateRoute (route: Route) {
     const prev = this.current
+    // 路由更新。
+    // history.current 是响应式对象，修改后会触发视图重新 render
     this.current = route
-    this.cb && this.cb(route)
+    this.cb && this.cb(route) // 执行路由更新回调
     this.router.afterHooks.forEach(hook => {
       hook && hook(route, prev)
     })
@@ -253,6 +257,7 @@ function extractGuards (
   return flatten(reverse ? guards.reverse() : guards)
 }
 
+// 提取路由守卫
 function extractGuard (
   def: Object | Function,
   key: string
@@ -264,10 +269,12 @@ function extractGuard (
   return def.options[key]
 }
 
+// 提取路由离开的守卫
 function extractLeaveGuards (deactivated: Array<RouteRecord>): Array<?Function> {
   return extractGuards(deactivated, 'beforeRouteLeave', bindGuard, true)
 }
 
+// 提取路由更新的守卫
 function extractUpdateHooks (updated: Array<RouteRecord>): Array<?Function> {
   return extractGuards(updated, 'beforeRouteUpdate', bindGuard)
 }

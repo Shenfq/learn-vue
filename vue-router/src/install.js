@@ -31,7 +31,7 @@ export function install (Vue) {
         this._router = this.$options.router
         // 调用路由实例的 init 方法
         this._router.init(this)
-        // 将 this._route 变成响应式对象
+        // 将 this._route 变成响应式对象，路由变化后触发视图的更新
         Vue.util.defineReactive(this, '_route', this._router.history.current)
       } else {
         this._routerRoot = (this.$parent && this.$parent._routerRoot) || this
