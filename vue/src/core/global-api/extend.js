@@ -36,6 +36,7 @@ export function initExtend (Vue: GlobalAPI) {
     Sub.prototype = Object.create(Super.prototype)
     Sub.prototype.constructor = Sub
     Sub.cid = cid++
+    // 组件创建 options 时，不带 vm
     Sub.options = mergeOptions(
       Super.options,
       extendOptions

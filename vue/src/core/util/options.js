@@ -21,9 +21,7 @@ import {
 } from 'shared/util'
 
 /**
- * Option overwriting strategies are functions that handle
- * how to merge a parent option value and a child option
- * value into the final value.
+ * 选项覆盖策略是处理如何将父选项值和子选项值合并到最终值的函数
  */
 const strats = config.optionMergeStrategies
 
@@ -71,7 +69,7 @@ export function mergeDataOrFn (
   vm?: Component
 ): ?Function {
   if (!vm) {
-    // in a Vue.extend merge, both should be functions
+    // 父子组件的 data 参数都应该是函数
     if (!childVal) {
       return parentVal
     }
@@ -113,6 +111,7 @@ strats.data = function (
   vm?: Component
 ): ?Function {
   if (!vm) {
+    // options.data 不为函数，则返回父组件 data
     if (childVal && typeof childVal !== 'function') {
       process.env.NODE_ENV !== 'production' && warn(
         'The "data" option should be a function ' +
@@ -130,7 +129,7 @@ strats.data = function (
 }
 
 /**
- * Hooks and props are merged as arrays.
+ * 生命周期合并
  */
 function mergeHook (
   parentVal: ?Array<Function>,
@@ -269,8 +268,7 @@ export function validateComponentName (name: string) {
 }
 
 /**
- * Ensure all props option syntax are normalized into the
- * Object-based format.
+ * 将 vue 组件的 props 规范化为对象形式 { type, defalut }
  */
 function normalizeProps (options: Object, vm: ?Component) {
   const props = options.props
@@ -307,7 +305,7 @@ function normalizeProps (options: Object, vm: ?Component) {
 }
 
 /**
- * Normalize all injections into Object-based format
+ * 将 vue 组件的 inject 规范化为对象形式 { from }
  */
 function normalizeInject (options: Object, vm: ?Component) {
   const inject = options.inject
@@ -334,7 +332,7 @@ function normalizeInject (options: Object, vm: ?Component) {
 }
 
 /**
- * Normalize raw function directives into object format.
+ * 将 vue 组件的 directives 规范化为对象形式 { bind, update }
  */
 function normalizeDirectives (options: Object) {
   const dirs = options.directives
@@ -375,13 +373,15 @@ export function mergeOptions (
     child = child.options
   }
 
-  normalizeProps(child, vm)
-  normalizeInject(child, vm)
-  normalizeDirectives(child)
+  normalizeProps(child, vm)  // 规范化 props
+  normalizeInject(child, vm) // 规范化 inject
+  normalizeDirectives(child) // 规范化 directives
+  // 处理 extends
   const extendsFrom = child.extends
   if (extendsFrom) {
     parent = mergeOptions(parent, extendsFrom, vm)
   }
+  // 处理 mixin
   if (child.mixins) {
     for (let i = 0, l = child.mixins.length; i < l; i++) {
       parent = mergeOptions(parent, child.mixins[i], vm)

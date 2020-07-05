@@ -13,7 +13,9 @@ import { extend, mergeOptions, formatComponentName } from '../util/index'
 let uid = 0
 
 export function initMixin (Vue: Class<Component>) {
+  // 初始化 vue 实例
   Vue.prototype._init = function (options?: Object) {
+    // vm => vue实例
     const vm: Component = this
     // a uid
     vm._uid = uid++
@@ -21,12 +23,13 @@ export function initMixin (Vue: Class<Component>) {
     let startTag, endTag
     /* istanbul ignore if */
     if (process.env.NODE_ENV !== 'production' && config.performance && mark) {
+      // 用于性能追踪
       startTag = `vue-perf-start:${vm._uid}`
       endTag = `vue-perf-end:${vm._uid}`
       mark(startTag)
     }
 
-    // a flag to avoid this being observed
+    // 标记该对象为 vue 实例，避开响应式系统的监听
     vm._isVue = true
     // merge options
     if (options && options._isComponent) {
@@ -35,9 +38,13 @@ export function initMixin (Vue: Class<Component>) {
       // internal component options needs special treatment.
       initInternalComponent(vm, options)
     } else {
+      // 设置 vue 实例的自定义选项
       vm.$options = mergeOptions(
+        // Vue.options
         resolveConstructorOptions(vm.constructor),
+        // 实例化时，传入的参数
         options || {},
+        // vue 实例
         vm
       )
     }
@@ -60,6 +67,7 @@ export function initMixin (Vue: Class<Component>) {
 
     /* istanbul ignore if */
     if (process.env.NODE_ENV !== 'production' && config.performance && mark) {
+      // 用于性能追踪
       vm._name = formatComponentName(vm, false)
       mark(endTag)
       measure(`vue ${vm._name} init`, startTag, endTag)
@@ -90,8 +98,10 @@ export function initInternalComponent (vm: Component, options: InternalComponent
   }
 }
 
+// 获取构造函数的 options
 export function resolveConstructorOptions (Ctor: Class<Component>) {
   let options = Ctor.options
+  // 如果是通过 Vue.extend 构造 vue 实例，需要取父类的 options
   if (Ctor.super) {
     const superOptions = resolveConstructorOptions(Ctor.super)
     const cachedSuperOptions = Ctor.superOptions

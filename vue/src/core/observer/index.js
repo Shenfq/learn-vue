@@ -29,10 +29,8 @@ export function toggleObserving (value: boolean) {
 }
 
 /**
- * Observer class that is attached to each observed
- * object. Once attached, the observer converts the target
- * object's property keys into getter/setters that
- * collect dependencies and dispatch updates.
+ * 附加到每个观察者的观察者类对象。附加后，观察者将转换目标
+ * 将对象的属性键插入获取器/设置器收集依赖关系并调度更新。
  */
 export class Observer {
   value: any;
@@ -40,8 +38,8 @@ export class Observer {
   vmCount: number; // number of vms that has this object as root $data
 
   constructor (value: any) {
-    this.value = value
-    this.dep = new Dep()
+    this.value = value // 建立对象引用
+    this.dep = new Dep() // 用于依赖收集
     this.vmCount = 0
     def(value, '__ob__', this)
     if (Array.isArray(value)) {
@@ -56,13 +54,12 @@ export class Observer {
   }
 
   /**
-   * Walk through each property and convert them into
-   * getter/setters. This method should only be called when
-   * value type is Object.
+   * 变量对象的每个属性，并设置 getter/setter
    */
   walk (obj: Object) {
     const keys = Object.keys(obj)
     for (let i = 0; i < keys.length; i++) {
+      // 定义对象每个属性为响应式数据
       defineReactive(obj, keys[i])
     }
   }
@@ -102,7 +99,7 @@ function copyAugment (target: Object, src: Object, keys: Array<string>) {
 }
 
 /**
- * Attempt to create an observer instance for a value,
+ * 创建观察者实例,
  * returns the new observer if successfully observed,
  * or the existing observer if the value already has one.
  */
@@ -110,8 +107,10 @@ export function observe (value: any, asRootData: ?boolean): Observer | void {
   if (!isObject(value) || value instanceof VNode) {
     return
   }
+  // 创建观察者实例
   let ob: Observer | void
   if (hasOwn(value, '__ob__') && value.__ob__ instanceof Observer) {
+    // 已存在，则直接返回
     ob = value.__ob__
   } else if (
     shouldObserve &&
@@ -129,7 +128,7 @@ export function observe (value: any, asRootData: ?boolean): Observer | void {
 }
 
 /**
- * Define a reactive property on an Object.
+ * 定义对象的属性为响应式
  */
 export function defineReactive (
   obj: Object,
@@ -152,13 +151,16 @@ export function defineReactive (
     val = obj[key]
   }
 
+  // 进行深度观测
   let childOb = !shallow && observe(val)
   Object.defineProperty(obj, key, {
     enumerable: true,
     configurable: true,
     get: function reactiveGetter () {
+      // 获取属性值，如果存在 getter 则从 getter 中获取
       const value = getter ? getter.call(obj) : val
       if (Dep.target) {
+        // 依赖收集
         dep.depend()
         if (childOb) {
           childOb.dep.depend()
@@ -185,6 +187,7 @@ export function defineReactive (
         val = newVal
       }
       childOb = !shallow && observe(newVal)
+      // 属性修改，触发之前收集的依赖
       dep.notify()
     }
   })
@@ -199,7 +202,7 @@ export function set (target: Array<any> | Object, key: any, val: any): any {
   if (process.env.NODE_ENV !== 'production' &&
     (isUndef(target) || isPrimitive(target))
   ) {
-    warn(`Cannot set reactive property on undefined, null, or primitive value: ${(target: any)}`)
+    warn(`Cannot set reactive property on undefined, null, or primitive value: ${(target)}`)
   }
   if (Array.isArray(target) && isValidArrayIndex(key)) {
     target.length = Math.max(target.length, key)
@@ -210,7 +213,7 @@ export function set (target: Array<any> | Object, key: any, val: any): any {
     target[key] = val
     return val
   }
-  const ob = (target: any).__ob__
+  const ob = target.__ob__
   if (target._isVue || (ob && ob.vmCount)) {
     process.env.NODE_ENV !== 'production' && warn(
       'Avoid adding reactive properties to a Vue instance or its root $data ' +
@@ -234,13 +237,13 @@ export function del (target: Array<any> | Object, key: any) {
   if (process.env.NODE_ENV !== 'production' &&
     (isUndef(target) || isPrimitive(target))
   ) {
-    warn(`Cannot delete reactive property on undefined, null, or primitive value: ${(target: any)}`)
+    warn(`Cannot delete reactive property on undefined, null, or primitive value: ${(target)}`)
   }
   if (Array.isArray(target) && isValidArrayIndex(key)) {
     target.splice(key, 1)
     return
   }
-  const ob = (target: any).__ob__
+  const ob = target.__ob__
   if (target._isVue || (ob && ob.vmCount)) {
     process.env.NODE_ENV !== 'production' && warn(
       'Avoid deleting properties on a Vue instance or its root $data ' +

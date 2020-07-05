@@ -6,8 +6,7 @@ import { remove } from '../util/index'
 let uid = 0
 
 /**
- * A dep is an observable that can have multiple
- * directives subscribing to it.
+ * 订阅者：用于依赖收集
  */
 export default class Dep {
   static target: ?Watcher;
@@ -37,22 +36,23 @@ export default class Dep {
     // stabilize the subscriber list first
     const subs = this.subs.slice()
     for (let i = 0, l = subs.length; i < l; i++) {
+      // 通知观察者进行视图更新
       subs[i].update()
     }
   }
 }
 
-// the current target watcher being evaluated.
-// this is globally unique because there could be only one
-// watcher being evaluated at any time.
+// 全局的观察者，同一时间只能有一个观察者
 Dep.target = null
 const targetStack = []
 
+// target 置为新的观察者实例，旧的观察者放入栈内
 export function pushTarget (_target: ?Watcher) {
   if (Dep.target) targetStack.push(Dep.target)
   Dep.target = _target
 }
 
+// 观察者出栈
 export function popTarget () {
   Dep.target = targetStack.pop()
 }

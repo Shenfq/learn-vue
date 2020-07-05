@@ -44,8 +44,10 @@ export function initGlobalAPI (Vue: GlobalAPI) {
   Vue.delete = del
   Vue.nextTick = nextTick
 
+  // 设置 options
   Vue.options = Object.create(null)
   ASSET_TYPES.forEach(type => {
+    // components、directives、filters
     Vue.options[type + 's'] = Object.create(null)
   })
 
@@ -53,10 +55,11 @@ export function initGlobalAPI (Vue: GlobalAPI) {
   // components with in Weex's multi-instance scenarios.
   Vue.options._base = Vue
 
+  // 扩展 components，builtInComponents = { KeepAlive }
   extend(Vue.options.components, builtInComponents)
 
-  initUse(Vue)
-  initMixin(Vue)
-  initExtend(Vue)
-  initAssetRegisters(Vue)
+  initUse(Vue)              // 挂载 Vue.use 方法
+  initMixin(Vue)            // 挂载 Vue.mixin 方法
+  initExtend(Vue)           // 挂载 Vue.extend 方法
+  initAssetRegisters(Vue)   // 挂载 Vue.compoent/directive/filter 方法 (全局组件、全局指令、全局过滤器)
 }

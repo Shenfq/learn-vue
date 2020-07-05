@@ -130,6 +130,7 @@ function initData (vm: Component) {
   while (i--) {
     const key = keys[i]
     if (process.env.NODE_ENV !== 'production') {
+      // data 与 methods 中的 key 重名
       if (methods && hasOwn(methods, key)) {
         warn(
           `Method "${key}" has already been defined as a data property.`,
@@ -138,6 +139,7 @@ function initData (vm: Component) {
       }
     }
     if (props && hasOwn(props, key)) {
+      // data 与 props 中的 key 重名
       process.env.NODE_ENV !== 'production' && warn(
         `The data property "${key}" is already declared as a prop. ` +
         `Use prop default value instead.`,
@@ -147,10 +149,11 @@ function initData (vm: Component) {
       proxy(vm, `_data`, key)
     }
   }
-  // observe data
+  // 响应式代理 data
   observe(data, true /* asRootData */)
 }
 
+// 获取 data，执行 data 方法
 export function getData (data: Function, vm: Component): any {
   // #7573 disable dep collection when invoking data getters
   pushTarget()
