@@ -25,8 +25,8 @@ function flushCallbacks () {
 // when state is changed right before repaint (e.g. #6813, out-in transitions).
 // Here we use microtask by default, but expose a way to force (macro) task when
 // needed (e.g. in event handlers attached by v-on).
-let microTimerFunc
-let macroTimerFunc
+let microTimerFunc // 微任务
+let macroTimerFunc // 宏任务
 let useMacroTask = false
 
 // Determine (macro) task defer implementation.
@@ -74,10 +74,7 @@ if (typeof Promise !== 'undefined' && isNative(Promise)) {
   microTimerFunc = macroTimerFunc
 }
 
-/**
- * Wrap a function so that if any code inside triggers state change,
- * the changes are queued using a (macro) task instead of a microtask.
- */
+// 包装函数，确保函数执行时强制使用宏任务。
 export function withMacroTask (fn: Function): Function {
   return fn._withTask || (fn._withTask = function () {
     useMacroTask = true

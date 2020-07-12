@@ -20,3 +20,7 @@ src                 # vue源代码
 ├── sfc             # 单文件组件（.vue 文件）解析，用于vue-template-compiler包
 ├── shared          # 整个代码库通用的代码
 ```
+
+## new Vue()
+
+![new Vue()](./images/new_vue.png)
